@@ -8,13 +8,13 @@ import (
 	"errors"
 )
 
-const CONFIG_PATH  = "config/eureka"
+const CONFIG_PATH  = "../conf/eureka"
 
 func ParseConfig() *AppConfig{
 	defaultAppConfig := new(AppConfig)
 	err := parseYml(CONFIG_PATH+".yaml",defaultAppConfig)
 	if err != nil{
-		panic("配置文件config/eureka.yaml没有找到")
+		panic("配置文件conf/eureka.yaml没有找到")
 	}
 	if defaultAppConfig.Profile != nil{
 		profileAppConfig := new(AppConfig)
