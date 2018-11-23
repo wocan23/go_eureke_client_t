@@ -8,17 +8,17 @@ import (
 	"errors"
 )
 
-const CONFIG_PATH  = "../conf/eureka"
 
-func ParseConfig() *AppConfig{
+
+func parseConfig() *AppConfig{
 	defaultAppConfig := new(AppConfig)
-	err := parseYml(CONFIG_PATH+".yaml",defaultAppConfig)
+	err := parseYml(configPath+".yaml",defaultAppConfig)
 	if err != nil{
 		panic("配置文件conf/eureka.yaml没有找到")
 	}
 	if defaultAppConfig.Profile != nil{
 		profileAppConfig := new(AppConfig)
-		err := parseYml(CONFIG_PATH+*defaultAppConfig.Profile+".yaml",defaultAppConfig)
+		err := parseYml(configPath+*defaultAppConfig.Profile+".yaml",defaultAppConfig)
 		if err !=  nil{
 			defaultAppConfig.Port = profileAppConfig.Port
 			defaultAppConfig.AppName = profileAppConfig.AppName
@@ -26,7 +26,7 @@ func ParseConfig() *AppConfig{
 		}
 	}
 	// ip
-	ip,_ := GetLocalIp()
+	ip,_ := getLocalIp()
 	defaultAppConfig.Host = &ip
 	return defaultAppConfig
 }
@@ -42,7 +42,7 @@ func parseYml(filePath string,configObj interface{}) error{
 	return  yaml.Unmarshal(configByte,configObj)
 }
 
-func GetLocalIp() (string,error){
+func getLocalIp() (string,error){
 	addrs, err := net.InterfaceAddrs()
 	if err != nil {
 		fmt.Println(err)

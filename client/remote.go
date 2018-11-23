@@ -1,7 +1,6 @@
 package client
 
 import (
-	"math/rand"
 	"fmt"
 	"net/http"
 	"strings"
@@ -11,13 +10,13 @@ import (
 	"time"
 )
 
-const URL = "http://%s:%d/%s"
+
 /**
 	调用其他微服务方法
  */
 func ExecRemoteFunc(appName string,urlPath string,paramObj interface{},resultObjPtr interface{}) error{
 	url := getRemoteClientUrl(appName,urlPath)
-	resBytes,err := Post(url,paramObj)
+	resBytes,err := PostWithTimeout(url,paramObj,defaultTimeout)
 	if err != nil{
 		return err
 	}
@@ -29,14 +28,10 @@ func ExecRemoteFunc(appName string,urlPath string,paramObj interface{},resultObj
 	随机选取客户端方法
  */
 func getRemoteClientUrl( appName string,urlPath string) string{
-	application := Apps[appName]
-	instances := application.Instances
-	// 随机选取
-	instanceIndex := rand.Intn(len(instances))
-	instance := instances[instanceIndex]
+	instance := realServiceSupport.GetSupportIndex(apps,appName)
 	ip := instance.IpAddr
 	port := instance.Port.Number
-	url := fmt.Sprintf(URL,ip,port,urlPath)
+	url := fmt.Sprintf(remoteUrl,ip,port,urlPath)
 	return url
 }
 
@@ -74,6 +69,6 @@ func PostWithTimeout(url string,paramObj interface{},timeout time.Duration)([]by
 			return resBytes,err
 		default:
 		}
-
 	}
 }
+
