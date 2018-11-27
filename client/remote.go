@@ -58,10 +58,10 @@ func PostWithTimeout(url string,paramObj interface{},timeout time.Duration)([]by
 	var do = make(chan int)
 	ctx,cancel := context.WithTimeout(context.Background(),timeout)
 	defer cancel()
-	go func(ctx context.Context) {
+	go func() {
 		resBytes,err = Post(url,paramObj)
 		do<-1
-	}(ctx)
+	}()
 	select{
 	case <- do:
 		return resBytes,err
