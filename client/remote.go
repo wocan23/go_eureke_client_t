@@ -55,7 +55,7 @@ func Post(url string,paramObj interface{})([]byte,error){
 func PostWithTimeout(url string,paramObj interface{},timeout time.Duration)([]byte,error){
 	var resBytes []byte
 	var err error
-	var do = make(chan int)
+	var do = make(chan int,1)
 	ctx,cancel := context.WithTimeout(context.Background(),timeout)
 	defer cancel()
 	go func() {
