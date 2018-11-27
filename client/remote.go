@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"github.com/kataras/iris/core/errors"
 	"time"
+	"context"
 )
 
 
@@ -55,20 +56,17 @@ func PostWithTimeout(url string,paramObj interface{},timeout time.Duration)([]by
 	var resBytes []byte
 	var err error
 	var do = make(chan int)
-
-	timeoutChan := time.After(timeout)
-	go func() {
+	ctx,cancel := context.WithTimeout(context.Background(),timeout)
+	defer cancel()
+	go func(ctx context.Context) {
 		resBytes,err = Post(url,paramObj)
 		do<-1
-	}()
-	for {
-		select{
-		case <-timeoutChan:
-			return nil,errors.New("调用超时")
-		case <-do:
-			return resBytes,err
-		default:
-		}
+	}(ctx)
+	select{
+	case <- do:
+		return resBytes,err
+	case <-ctx.Done():
+		return resBytes,err
 	}
 }
 
