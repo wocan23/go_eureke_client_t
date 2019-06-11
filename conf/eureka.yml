@@ -2,4 +2,4 @@ appName: go-client
 profile: qas
 port: 9878
 eurekaUrls:
-  - "http://10.70.93.52:9876"
+  - "http://localhost:9876"
