@@ -39,7 +39,7 @@ func mainFunc(){
 	ip,_ := common.GetLocalIp()
 	var host = ip
 	var port = 9878
-	var serviceUrls = []string{"http://10.70.93.52:9876"}
+	var serviceUrls = []string{"http://localhost:9876"}
 	eurekaConfig := model.NewConfigFromArgs(appName,host,port,serviceUrls...)
 	eurekaClient = eureka.NewClient(eurekaConfig)
 	apps,err := eurekaClient.GetApplications()
